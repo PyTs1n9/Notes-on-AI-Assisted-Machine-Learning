@@ -35,7 +35,8 @@ tab = pd.DataFrame({
 	"预测值": np.round(pred, 2),
 	"误差": np.round(pred - y_test, 2)
 })
-# 不会直接手算
+# 手算 MAE = (0.88 + 0.05 + 0.27) ÷ 3 = 0.40
+# 实测 MAE = 0.4035874439461864 → 保留 2 位 = 0.40
 
 plt.plot(y_test, 'o-', label='真实值')
 plt.plot(pred, 'o--', label='预测值')
