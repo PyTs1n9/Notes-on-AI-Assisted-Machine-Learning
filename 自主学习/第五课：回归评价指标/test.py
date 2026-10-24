@@ -37,7 +37,7 @@ tab = pd.DataFrame({
 })
 # 手算 MAE = (0.88 + 0.05 + 0.27) ÷ 3 = 0.40
 # 实测 MAE = 0.4035874439461864 → 保留 2 位 = 0.40
-
+print(tab.to_string(index=False))
 plt.plot(y_test, 'o-', label='真实值')
 plt.plot(pred, 'o--', label='预测值')
 plt.xlabel('广告投入')
