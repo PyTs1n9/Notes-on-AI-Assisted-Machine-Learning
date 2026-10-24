@@ -1,0 +1,5 @@
+学习目标
+1.使用 davies_bouldin_score。
+2.知道 DBI 越小通常越好。
+3.比较不同 K 的 DBI。
+4.结合 DBI、轮廓系数和 inertia 判断

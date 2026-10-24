@@ -1,0 +1,25 @@
+# 虚拟环境（约 400MB，不上传）
+.venv/
+venv/
+env/
+
+# Python 缓存文件
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# IDE / 编辑器配置
+.idea/
+.vscode/
+
+# 本地工具目录
+.workbuddy/
+
+# 本地提示词/教学约定（不上传）
+.hermes.md
+
+# 系统文件
+Thumbs.db
+.DS_Store
+desktop.ini

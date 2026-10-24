@@ -1,0 +1,6 @@
+Fresh	mean=2269.4376	std=1626.1607
+Milk	mean=4047.6621	std=3718.5802
+Grocery	mean=4743.0317	std=4168.1541
+Frozen	mean=1331.9388	std=994.9162
+Detergents_Paper	mean=2336.6327	std=2423.0635
+Delicassen	mean=436.4671	std=325.8593

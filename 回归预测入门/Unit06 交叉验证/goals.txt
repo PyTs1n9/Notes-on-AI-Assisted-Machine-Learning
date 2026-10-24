@@ -1,0 +1,5 @@
+学习目标
+解释 5-fold 的轮流验证过程。
+使用 cross_val_score。
+使用 GridSearchCV 搜索 alpha。
+只用训练集交叉验证，把验证集留作最后检查。

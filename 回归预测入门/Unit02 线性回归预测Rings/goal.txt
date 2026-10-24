@@ -1,0 +1,5 @@
+学习目标
+调用 LinearRegression 拟合训练数据。
+对验证集预测 Rings。
+计算 RMSE、MAE、R²。
+绘制预测值和真实值的关系图。
