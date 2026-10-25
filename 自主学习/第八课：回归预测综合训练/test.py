@@ -55,7 +55,7 @@ for name, m in models.items():
 
 # 网格搜索
 gs = GridSearchCV(Ridge(), {'alpha': [0.01, 0.1, 1, 10, 100]}, cv=cv)
-gs.fit(X_tr, y_tr)
+gs.fit(X, y)
 print('best_params_:', gs.best_params_)
 print('best_score_:', gs.best_score_)
 for a, s in zip(gs.cv_results_['param_alpha'], gs.cv_results_['mean_test_score']):
@@ -67,7 +67,7 @@ print("alpha=10最好")
 print(gs.best_score_ - gs.cv_results_['mean_test_score'][3])
 
 print("② alpha 曲线怎么读")
-print('不太理解怎么读')
+print('找最高行，看平台，看尾部')
 
 print("③ 必须点到 Lasso 对「课外活动」系数做了什么（看 `coef_`）")
 print('Lasso把课外活动的系数压成了-0')
