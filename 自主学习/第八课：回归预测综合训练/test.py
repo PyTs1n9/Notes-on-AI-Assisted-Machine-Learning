@@ -63,11 +63,10 @@ for a, s in zip(gs.cv_results_['param_alpha'], gs.cv_results_['mean_test_score']
 
 # 三句结果分析
 print("① 指标表上谁最好、差多少")
-print("alpha=10最好")
-print(gs.best_score_ - gs.cv_results_['mean_test_score'][3])
+print("指标表上 OLS 最好：R2=0.7016，比 Ridge 高 0.0002、比 Lasso 高 0.0067，差距不到 0.01——三个模型基本打平")
 
 print("② alpha 曲线怎么读")
-print('找最高行，看平台，看尾部')
+print('找最高行：alpha=0.01的R2最大；看平台：基本都差不多；看尾部：10略降，100直接掉一截，说明100的时候惩罚过头了，需要排掉')
 
 print("③ 必须点到 Lasso 对「课外活动」系数做了什么（看 `coef_`）")
 print('Lasso把课外活动的系数压成了-0')
