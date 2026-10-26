@@ -38,13 +38,21 @@ for name, m in models.items():
 	print(f"Name: {name:<6}MAE: {round(mae, 2)} MSE: {round(mse, 2)} RMSE: {round(rmse, 2)} R2: {round(r2, 4)}")
 print("一句话点评：Lasso直接把课外活动的系数压成0")
 
+
 df = pd.read_csv('sales.csv', encoding='utf-8-sig')
 X = df[['广告投入', '优惠券', '店员人数', '会员数', '客流量']]
 y = df['销量']
 cv = KFold(n_splits=5, shuffle=True, random_state=7)
+
+models = {
+	"OLS": LinearRegression(),
+	"Ridge": Ridge(alpha=1),
+	"Lasso": Lasso(alpha=1, max_iter=10000)
+}
+
 for name, m in models.items():
 	scores = cross_val_score(m, X, y, cv=cv)
-	print(f"Name: {name:<6} Scores: {np.round(scores, 4)}")
+	print(f"Name: {name:<6} Scores: {np.round(scores, 4)} 平均分: {round(scores.mean(), 4)}")
 
 gs = GridSearchCV(Ridge(), {'alpha': [0.01, 0.1, 1, 10, 100]}, cv=cv)
 gs.fit(X, y)
