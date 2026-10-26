@@ -203,11 +203,133 @@ inertia_（簇内平方和）: 0.55
 
 ### 我的练习解答
 
-（在此粘贴你的代码和运行结果）
+```py
+import numpy as np
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+
+df = pd.read_csv('customers.csv', encoding='utf-8-sig')
+print(df.shape)
+print(df.dtypes)
+print(df.isnull().sum().sum())
+
+scaler = StandardScaler()
+X_scaler = scaler.fit_transform(df)
+print(X_scaler.shape)
+print(X_scaler.mean(axis=0).round(4))
+print(X_scaler.std(axis=0).round(4))
+
+km = KMeans(n_clusters=3, random_state=42, n_init=10)
+km.fit(X_scaler)
+print(np.round(km.inertia_, 2))
+print(km.labels_[:10])
+print(pd.Series(km.labels_).value_counts().sort_index().to_dict())
+
+print(km.cluster_centers_.shape)
+print(km.cluster_centers_.round(2))
+```
+
+(60, 2)
+年收入（元）    float64
+消费评分      float64
+dtype: object
+0
+(60, 2)
+[0. 0.]
+[1. 1.]
+D:\Conda_envs\envs\BaiQing3.10AI\lib\site-packages\sklearn\cluster\_kmeans.py:1419: UserWarning: KMeans is known to have a memory leak on Windows with MKL, when there are less chunks than available threads. You can avoid it by setting the environment variable OMP_NUM_THREADS=1.
+  warnings.warn(
+6.71
+[0 0 0 0 0 0 0 0 0 0]
+{0: 24, 1: 16, 2: 20}
+(3, 2)
+[[-0.95 -1.01]
+ [ 1.49 -0.05]
+ [-0.05  1.25]]
+
+#### 老师批改·第1轮（2026-10-26，批改对象：test.py 20:25 版 + 文档贴码）
+
+**结论：✅ 通过，本课作业关闭。** 四个验收点全过；你贴的输出和我用你的 conda `BaiQing3.10AI` 复跑 `test.py` 的结果逐行一致。
+
+**实跑输出**（`BaiQing3.10AI` 复现 `test.py`，stdout）：
+
+```
+(60, 2)
+年收入（元）    float64
+消费评分      float64
+dtype: object
+0
+(60, 2)
+[0. 0.]
+[1. 1.]
+6.71
+[0 0 0 0 0 0 0 0 0 0]
+{0: 24, 1: 16, 2: 20}
+(3, 2)
+[[-0.95 -1.01]
+ [ 1.49 -0.05]
+ [-0.05  1.25]]
+```
+
+**验收点复核**：① shape (60, 2)、缺失值 0、两列都是 float64 ✅；② 形状 (60, 2)、两列均值 `[0. 0.]`、标准差 `[1. 1.]` ✅；③ `inertia_` 6.71、`labels_` 前 10 个全 0、各簇 `{0: 24, 1: 16, 2: 20}` ✅；④ 中心形状 (3, 2)、数值 `[[-0.95, -1.01], [1.49, -0.05], [-0.05, 1.25]]` ✅。
+
+两条说明（都不算错）：
+
+1. 你贴的输出里那两行 `UserWarning: ... memory leak ...` 是 stderr（标准错误）警告，不是程序输出——sklearn 在 Windows + MKL 上的老毛病，跟你的代码无关；嫌它碍眼就在最前面加 `import os; os.environ['OMP_NUM_THREADS'] = '1'`，不加也完全不影响结果。
+2. `dtype: object` 那行是 pandas 2.x 的显示方式，课件（pandas 3.x）里显示 `dtype: str`——版本显示差异，照旧不算错。
+
+**思考题**（不计入验收点）：未作答——读法我在下面【我的疑问】的「老师答疑」里拆好了，用自己的话把三簇各说一句即可，不阻塞结课。
+
+两个风格小建议（下节顺手改就行）：① 变量名 `X_scaler` 建议改成 `X_scaled`——`scaler` 是"缩放器"、`X_scaled` 是"缩放后的数据"，现在这个名字把两兄弟叫混了；② 打印带上标签（比如 `print('各列均值:', ...)`），光秃秃的 `[0. 0.]` 隔几天回看就对不上号了。
 
 ### 我的疑问
 
-（记录没想通的点，会话里问我）
+```py
+print('各列均值:', X_scaled.mean(axis=0).round(4))
+print('各列标准差:', X_scaled.std(axis=0).round(4))
+```
+
+这里的axis是什么参数
+
+**思考**（不计入验收点）：看三个中心的坐标，一句话说说每簇像什么客群。这一问我不会
+
+#### 老师答疑（2026-10-26）
+
+**疑问 1：`axis` 是什么参数？** 一句话：`axis`（轴）决定统计"沿哪个方向压缩"。`X_scaled.mean(axis=0)` 是**每列一个结果**（各列均值，形状 (2,)），写成 `axis=1` 就是**每行一个结果**（形状 (60,)）。完整拆解补进了下节「补充答疑：axis=0 到底在算什么」。
+
+**疑问 2：思考题"每簇像什么客群"不会**——不会很正常，这题干的是"把标准化坐标翻译成人话"。翻译规则就一条：**中心的每个数 = 该簇在这一列的平均水平，0 是全体顾客的平均线，±1 大约是高/低于平均一个标准差（standard deviation）**。拿你实跑的三行中心逐行读：
+
+| 簇 | 年收入（元） | 消费评分 | 一句话画像 |
+|---|---|---|---|
+| 0（24 人） | -0.95 | -1.01 | 两列都比平均低约 1 个标准差 → 收入不高、花钱也省的"精打细算型" |
+| 1（16 人） | +1.49 | -0.05 | 收入高出平均约 1.5 个标准差、评分却贴着平均 → "高收入低消费"的理性派 |
+| 2（20 人） | -0.05 | +1.25 | 收入贴着平均、评分高出约 1.25 个标准差 → "收入一般但敢花"的消费达人 |
+
+读中心三步（练熟就是聚类分析的日常）：① 先看哪一列绝对值大（那是这簇的特色）；② 看符号（正 = 高于平均，负 = 低于平均）；③ 结合各簇人数（你的 `{0: 24, 1: 16, 2: 20}`）说人话。
+
+照「簇 X 是……客群（收入 +1.49、评分 -0.05）」这个句式，用你的话把三簇各说一句（不计入验收点，想好了在会话里说一声就行）。想把中心换回"元/分"的原始单位看，代码最后加一行 `print(scaler.inverse_transform(km.cluster_centers_))`。
+### 补充答疑：axis=0 到底在算什么
+
+会话答疑（2026-10-26）：`axis`（轴）是 numpy 所有统计函数的公共参数，决定"沿哪个方向走一趟、把哪个方向压掉"。把 `X_scaled` 想成 60 行 2 列的表格：**行是第 0 轴（axis=0），列是第 1 轴（axis=1）**。
+
+- **`axis=0`：每列一个结果**。从上往下走完一列，行被压掉，(60, 2) → (2,)。所以 `X_scaled.mean(axis=0)` = 各列均值、`X_scaled.std(axis=0)` = 各列标准差。
+- **`axis=1`：每行一个结果**。从左往右走完一行，列被压掉，(60, 2) → (60,)，得到每个顾客两项特征的平均。
+- **不写 `axis`：全体一个结果**。(60, 2) → 一个数字。
+- 记法一句话：**axis=0 每列一个数，axis=1 每行一个数**；形状口诀「压掉第 0 轴（行）剩 (2,)，压掉第 1 轴（列）剩 (60,)」。
+- 一个坑：numpy 的 `X.mean()` 不写 axis 是全体一个数，pandas 的 `df.mean()` 不写 axis 默认按列算（axis=0）——写作业时把 axis 写明白最稳。
+
+### 补充答疑：三种 round 的分工
+
+会话答疑（2026-10-26）：`round(x, 3)`、`x.round(3)`、`np.round(x, 3)` 是三样东西，分工如下（`.venv` 实测过输入输出类型）：
+
+| 写法 | 是什么 | x 能是什么 | 返回 |
+|---|---|---|---|
+| `round(x, 3)` | Python 内置函数 | **单个数字** | 一个数字 |
+| `x.round(3)` | 对象自带方法 | 数组 / Series / DataFrame | 同类型新对象 |
+| `np.round(x, 3)` | numpy 函数 | 数字、数组、Series、DataFrame | 跟随输入类型 |
+
+一句话分工：**单个数用 `round`，成批的用 `.round(3)` 或 `np.round(x, 3)`（孪生，结果一样）**。本课演示里 `round(km.inertia_, 2)` 是单个数、`X_scaled.round(2)` 是整块数组，就是按这个分工写的。两个小坑：① 三者都是"五成双"取整（`round(2.5)` → `2`），卡在中间的 .5 往偶数靠；② `round` 改数值本身，只想打印好看用 `f'{x:.3f}'`。
 
 ## 【本节重点总结】
 
