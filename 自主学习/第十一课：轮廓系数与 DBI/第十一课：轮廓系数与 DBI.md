@@ -179,11 +179,113 @@ DBI 谷值：K=3（0.3091）
 
 ### 我的练习解答
 
-（在此粘贴你的代码和运行结果）
+```py
+import pandas as pd
+from langchain.vectorstores import sklearn
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score, davies_bouldin_score
+
+df = pd.read_csv('players.csv', encoding='utf-8-sig')
+print(df.shape)
+print(df.dtypes)
+print(df.isnull().sum().sum())
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(df)
+print(X_scaled.shape)
+print(X_scaled.mean(axis=0).round(4))
+print(X_scaled.std(axis=0).round(4))
+
+Ks = list(range(2, 11))
+sils = []
+dbis = []
+
+for k in Ks:
+    km = KMeans(n_clusters=k, random_state=42, n_init=10)
+    km.fit(X_scaled)
+    sils.append(round(silhouette_score(X_scaled, km.labels_), 4))
+    dbis.append(round(davies_bouldin_score(X_scaled, km.labels_), 4))
+print(sils)
+print(dbis)
+
+best_sil = Ks[sils.index(max(sils))]
+best_dbi = Ks[dbis.index(min(dbis))]
+print(best_sil)
+print(best_dbi)
+
+print('最佳K是4，轮廓系数最大值对应的K=4，DBI最小的峰对应的K=4，第十章肘部结论对应的K=4')
+```
 
 ### 我的疑问
 
-（记录没想通的点，会话里问我）
+(80, 2)
+场均得分    float64
+场均篮板    float64
+dtype: object
+0
+(80, 2)
+[-0. -0.]
+[1. 1.]
+[0.5265, 0.6684, 0.8652, 0.7897, 0.6895, 0.5824, 0.4585, 0.4569, 0.451]
+[0.9985, 0.4978, 0.1819, 0.3431, 0.5113, 0.6283, 0.7253, 0.687, 0.699]
+4
+4
+最佳K是4，轮廓系数最大值对应的K=4，DBI最小的峰对应的K=4，第十章肘部结论对应的K=4
+
+#### 老师批改·第1轮（2026-10-27，批改对象：test.py 17:40 版）
+
+**结论：待修正** —— 数值全对（验收点①②③全过，实跑与你贴的输出逐行一致，贴的是新鲜输出👍），卡在④的打印标签和⑤的结论一句话。
+
+**逐项验收**
+- ① ✅ `df.shape` == (80, 2)、缺失值 0、两列都是 float64。
+- ② ✅ 标准化后 (80, 2)，均值 `[-0. -0.]`（绝对值 < 0.001），标准差 `[1. 1.]`（与 1 之差 < 0.001）。
+- ③ ✅ 轮廓系数九档、DBI 九档与验收点完全吻合（`0.451`/`0.687` 是浮点打印不补零，不是错）。
+- ④ ⚠️ 峰值/谷值确实是 `max`/`min` + `.index` 算出来的（没有手写死，这点做得对），但打印只有光秃秃的 `4`、`4`——两个 4 谁是谁分不出来，验收点要求的「轮廓系数峰值 K=4」「DBI 谷值 K=4」字样没出现。
+- ⑤ ✗ 结论没引用你自己表里的数字；而且「DBI最小的峰」把方向说反了——DBI 找的是**谷值**（越小越好），把最小值叫成「峰」正好踩了本课「方向千万别记反」这条；「第十章」应为「第十课」。
+
+**你的真实输出**（用你的 conda `BaiQing3.10AI` 复跑 test.py，与你贴的逐行一致）：
+
+```text
+(80, 2)
+场均得分    float64
+场均篮板    float64
+dtype: object
+0
+(80, 2)
+[-0. -0.]
+[1. 1.]
+[0.5265, 0.6684, 0.8652, 0.7897, 0.6895, 0.5824, 0.4585, 0.4569, 0.451]
+[0.9985, 0.4978, 0.1819, 0.3431, 0.5113, 0.6283, 0.7253, 0.687, 0.699]
+4
+4
+最佳K是4，轮廓系数最大值对应的K=4，DBI最小的峰对应的K=4，第十章肘部结论对应的K=4
+```
+
+**修正版目标输出**（删掉误导入 + 两行打印加标签 + 结论引数字，改动见下方待修正清单）：
+
+```text
+(80, 2)
+场均得分    float64
+场均篮板    float64
+dtype: object
+0
+(80, 2)
+[-0. -0.]
+[1. 1.]
+[0.5265, 0.6684, 0.8652, 0.7897, 0.6895, 0.5824, 0.4585, 0.4569, 0.451]
+[0.9985, 0.4978, 0.1819, 0.3431, 0.5113, 0.6283, 0.7253, 0.687, 0.699]
+轮廓系数峰值 K=4
+DBI 谷值 K=4
+最佳K=4：轮廓系数在 K=4 取到最大值 0.8652，DBI 在 K=4 低到最小值 0.1819，第十课肘部结论也是 K=4
+```
+
+**待修正清单**（自己动手修好、把新的实跑输出贴回【我的练习解答】代码块正下方 = 通过）：
+
+1. **结论一句话**：引用你自己表里的数字（例如「轮廓系数在 K=4 取到最大值 0.8652，DBI 在 K=4 低到最小值 0.1819」），把「DBI最小的峰」改成「DBI 谷值」，「第十章」→「第十课」。
+2. **打印加标签**：`print(best_sil)` / `print(best_dbi)` 改成 f-string，打成「轮廓系数峰值 K=4」「DBI 谷值 K=4」——标签里拼 `{best_sil}`/`{best_dbi}`，别把 4 手写死。
+3. **删掉误导入**：第 2 行 `from langchain.vectorstores import sklearn` 是 IDE 自动补全误加的，跟作业毫无关系；你的环境里恰好装了 langchain 才没报错，换台机器直接 ImportError。
+4. 小提醒（不算错）：这次实跑输出贴到了【我的疑问】小节下面，下次贴在【我的练习解答】代码块的正下方。
 
 ## 【本节重点总结】
 
