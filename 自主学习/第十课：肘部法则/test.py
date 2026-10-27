@@ -36,9 +36,10 @@ for k, iner, drop in zip(Ks, inertia, drops):
 	print(f'K={k:<3d} inertia_={iner:<6} 下降幅度={d}')
 
 plt.plot(Ks, inertia, 'o-')
-plt.xlabel('K')
-plt.ylabel('距离')
-plt.title('K-距离')
+plt.xlabel('簇数 K')
+plt.ylabel('inertia_（簇内平方和）')
+plt.title('肘部法则：簇数 K 与 inertia 的关系（球员数据）')
+plt.tight_layout()
 plt.savefig('k-inertia.png')
 plt.show()
 
