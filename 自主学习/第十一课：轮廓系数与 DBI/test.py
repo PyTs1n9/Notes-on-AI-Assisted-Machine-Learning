@@ -29,7 +29,7 @@ print(dbis)
 
 best_sil = Ks[sils.index(max(sils))]
 best_dbi = Ks[dbis.index(min(dbis))]
-print(best_sil)
-print(best_dbi)
+print(f"轮廓系数峰值 K={best_sil}")
+print(f"DBI谷值 K={best_dbi}")
 
-print('最佳K是4，轮廓系数最大值对应的K=4，DBI最小的峰对应的K=4，第十章肘部结论对应的K=4')
+print('最佳K是4，轮廓系数最大值0.8652对应的K=4，DBI最小的谷值0.1819对应的K=4，第十课肘部结论对应的K=4')

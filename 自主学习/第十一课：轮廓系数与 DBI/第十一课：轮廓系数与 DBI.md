@@ -202,19 +202,20 @@ sils = []
 dbis = []
 
 for k in Ks:
-    km = KMeans(n_clusters=k, random_state=42, n_init=10)
-    km.fit(X_scaled)
-    sils.append(round(silhouette_score(X_scaled, km.labels_), 4))
-    dbis.append(round(davies_bouldin_score(X_scaled, km.labels_), 4))
+	km = KMeans(n_clusters=k, random_state=42, n_init=10)
+	km.fit(X_scaled)
+	sils.append(round(silhouette_score(X_scaled, km.labels_), 4))
+	dbis.append(round(davies_bouldin_score(X_scaled, km.labels_), 4))
 print(sils)
 print(dbis)
 
 best_sil = Ks[sils.index(max(sils))]
 best_dbi = Ks[dbis.index(min(dbis))]
-print(best_sil)
-print(best_dbi)
+print(f"轮廓系数峰值 K={best_sil}")
+print(f"DBI谷值 K={best_dbi}")
 
-print('最佳K是4，轮廓系数最大值对应的K=4，DBI最小的峰对应的K=4，第十章肘部结论对应的K=4')
+print('最佳K是4，轮廓系数最大值0.8652对应的K=4，DBI最小的谷值0.1819对应的K=4，第十课肘部结论对应的K=4')
+
 ```
 
 ### 我的疑问
@@ -229,9 +230,9 @@ dtype: object
 [1. 1.]
 [0.5265, 0.6684, 0.8652, 0.7897, 0.6895, 0.5824, 0.4585, 0.4569, 0.451]
 [0.9985, 0.4978, 0.1819, 0.3431, 0.5113, 0.6283, 0.7253, 0.687, 0.699]
-4
-4
-最佳K是4，轮廓系数最大值对应的K=4，DBI最小的峰对应的K=4，第十章肘部结论对应的K=4
+轮廓系数峰值 K=4
+DBI谷值 K=4
+最佳K是4，轮廓系数最大值0.8652对应的K=4，DBI最小的谷值0.1819对应的K=4，第十课肘部结论对应的K=4
 
 #### 老师批改·第1轮（2026-10-27，批改对象：test.py 17:40 版）
 
@@ -286,6 +287,35 @@ DBI 谷值 K=4
 2. **打印加标签**：`print(best_sil)` / `print(best_dbi)` 改成 f-string，打成「轮廓系数峰值 K=4」「DBI 谷值 K=4」——标签里拼 `{best_sil}`/`{best_dbi}`，别把 4 手写死。
 3. **删掉误导入**：第 2 行 `from langchain.vectorstores import sklearn` 是 IDE 自动补全误加的，跟作业毫无关系；你的环境里恰好装了 langchain 才没报错，换台机器直接 ImportError。
 4. 小提醒（不算错）：这次实跑输出贴到了【我的疑问】小节下面，下次贴在【我的练习解答】代码块的正下方。
+
+#### 老师批改·第2轮（2026-10-27，批改对象：test.py 17:48 版）
+
+**结论：待修正** —— 上轮 3 项里 2 项已修好（✅ 结论引了 0.8652/0.1819 并改「谷值」「第十课」；✅ 两行打印加了标签），实跑输出与你贴的逐行一致（新鲜输出）。只剩 1 项没修。
+
+**逐项对账（对上轮清单）**
+1. ✅ 结论一句话：数字、谷值方向、「第十课」全部到位。
+2. ✅ 打印标签：「轮廓系数峰值 K=4」「DBI谷值 K=4」，K 由 `{best_sil}`/`{best_dbi}` 拼出，没手写死（`DBI谷值` 少个空格不算事）。
+3. ✗ **漏了**：第 2 行 `from langchain.vectorstores import sklearn` 还在——上轮清单第 3 项要求删掉它。
+
+**本次实跑输出**（conda `BaiQing3.10AI`，与你贴的一致）：
+
+```text
+(80, 2)
+场均得分    float64
+场均篮板    float64
+dtype: object
+0
+(80, 2)
+[-0. -0.]
+[1. 1.]
+[0.5265, 0.6684, 0.8652, 0.7897, 0.6895, 0.5824, 0.4585, 0.4569, 0.451]
+[0.9985, 0.4978, 0.1819, 0.3431, 0.5113, 0.6283, 0.7253, 0.687, 0.699]
+轮廓系数峰值 K=4
+DBI谷值 K=4
+最佳K是4，轮廓系数最大值0.8652对应的K=4，DBI最小的谷值0.1819对应的K=4，第十课肘部结论对应的K=4
+```
+
+**待修正清单（只剩这一条）**：删掉 `from langchain.vectorstores import sklearn` 那一行，重新实跑、把输出贴到【我的练习解答】代码块正下方 = ✅ 通过关课。
 
 ## 【本节重点总结】
 
