@@ -1,5 +1,4 @@
 import pandas as pd
-from langchain.vectorstores import sklearn
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score, davies_bouldin_score

@@ -181,7 +181,6 @@ DBI 谷值：K=3（0.3091）
 
 ```py
 import pandas as pd
-from langchain.vectorstores import sklearn
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score, davies_bouldin_score
@@ -316,6 +315,36 @@ DBI谷值 K=4
 ```
 
 **待修正清单（只剩这一条）**：删掉 `from langchain.vectorstores import sklearn` 那一行，重新实跑、把输出贴到【我的练习解答】代码块正下方 = ✅ 通过关课。
+
+#### 老师批改·第3轮（2026-10-27，批改对象：test.py 17:50 版）
+
+**结论：✅ 全过。** 上轮唯一剩下的误导入已删干净（文档里的代码块和 test.py 都查过），实跑输出与你贴的逐行一致，验收点①～⑤全部达成：
+
+- ① ✅ (80, 2)、缺失值 0、两列 float64
+- ② ✅ 标准化 (80, 2)，均值 [-0. -0.]、标准差 [1. 1.]
+- ③ ✅ 九档轮廓系数、九档 DBI 与标准值逐档吻合
+- ④ ✅ 「轮廓系数峰值 K=4」「DBI谷值 K=4」由 `max`/`min` + `.index` 算出
+- ⑤ ✅ 结论引 0.8652 / 0.1819，方向表述正确，并呼应第十课肘部
+
+**本次实跑输出**（conda `BaiQing3.10AI`）：
+
+```text
+(80, 2)
+场均得分    float64
+场均篮板    float64
+dtype: object
+0
+(80, 2)
+[-0. -0.]
+[1. 1.]
+[0.5265, 0.6684, 0.8652, 0.7897, 0.6895, 0.5824, 0.4585, 0.4569, 0.451]
+[0.9985, 0.4978, 0.1819, 0.3431, 0.5113, 0.6283, 0.7253, 0.687, 0.699]
+轮廓系数峰值 K=4
+DBI谷值 K=4
+最佳K是4，轮廓系数最大值0.8652对应的K=4，DBI最小的谷值0.1819对应的K=4，第十课肘部结论对应的K=4
+```
+
+✅ 通过，本课作业关闭
 
 ## 【本节重点总结】
 
