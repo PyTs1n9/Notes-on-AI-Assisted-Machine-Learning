@@ -1,0 +1,12 @@
+numpy
+pandas
+scikit-learn
+matplotlib
+seaborn
+opencv-python
+Pillow
+PyYAML
+tqdm
+# torch、torchvision请按本机CUDA/CPU环境从PyTorch官网正确安装。
+# YOLOv8项目依赖：
+ultralytics>=8.0,<9
