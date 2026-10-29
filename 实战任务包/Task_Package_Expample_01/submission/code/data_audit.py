@@ -6,21 +6,21 @@ df_day = pd.read_csv(
 df_hour = pd.read_csv(
 	'D:\\Code\\Python\\人工智能基础\\实战任务包\\Task_Package_Expample_01\\data\\bike_sharing\\hour.csv')
 
-rows = []
 for _ in [df_day, df_hour]:
-	print(_.shape)
-	print(_.columns)
-	print(_.dtypes)
-	print(_.head())
-	print(_.describe())
-	print(_[_.columns].isnull().sum())
-	print(_.duplicated().sum())
-	print(_['instant'].duplicated().sum())
+	print(f'{_} 形状：', _.shape)
+	print(f'{_} 字段名称：', _.columns)
+	print(f'{_} 字段类型：', _.dtypes)
+	print(f'{_} head信息：', _.head())
+	print(f'{_} describe信息：', _.describe())
+	print(f'{_} 每列缺失值数量：', _[_.columns].isnull().sum())
+	print(f'{_} 完全重复行数量：', _.duplicated().sum())
+	print(f'{_} instant列重复情况：', _['instant'].duplicated().sum())
 key_cols = ["dteday", "hr"]
-print(_.duplicated(subset=key_cols, keep="first").sum())
+print(f'{_} 日期键重复情况：', _.duplicated(subset=key_cols, keep="first").sum())
 
 
 def make_rows(df, name):
+	rows = []
 	for col in df.columns:
 		s = df[col]
 		if s.dtype in ['int64', 'float64']:
@@ -58,9 +58,9 @@ data_profile.to_csv('../data_outputs/data_profile.csv', encoding='utf-8-sig', in
 
 stats_cols = ['cnt', 'temp', 'hum', 'windspeed']
 df_stats = df_day[stats_cols].describe().T
-df_stats.to_csv('../data_outputs/df_day_stats.csv', encoding='utf-8-sig', index=False)
+df_stats.to_csv('../data_outputs/df_day_stats.csv', encoding='utf-8-sig')
 df_stats = df_hour[stats_cols].describe().T
-df_stats.to_csv('../data_outputs/df_hour_stats.csv', encoding='utf-8-sig', index=False)
+df_stats.to_csv('../data_outputs/df_hour_stats.csv', encoding='utf-8-sig')
 
 all_outlier = pd.DataFrame()
 
@@ -82,8 +82,8 @@ outlier_tool(df_day, "day")
 outlier_tool(df_hour, "hour")
 all_outlier.to_csv('../data_outputs/outlier_candidates.csv', encoding='utf-8-sig', )
 
-print(df_day['casual'] + df_day['registered'] == df_day['cnt'])
-print(df_hour['casual'] + df_hour['registered'] == df_hour['cnt'])
+print('输出True说明满足cnt == casual + registered ', (df_day['casual'] + df_day['registered'] == df_day['cnt']).all())
+print('输出True说明满足cnt == casual + registered ', (df_hour['casual'] + df_hour['registered'] == df_hour['cnt']).all())
 
 day = df_day.copy()
 hour = df_hour.copy()
