@@ -69,15 +69,17 @@ alpha_list = [0.01, 0.1, 1, 10, 100]
 cv = KFold(n_splits=5, shuffle=True, random_state=42)
 for a in alpha_list:
 	ridge_score = cross_val_score(Ridge(alpha=a), X_train_scaled, y_train, cv=cv)
+	print(f'Ridge alpha={a:<6} 平均CV分数: {ridge_score.mean():.4f}')
 for a in alpha_list:
 	lasso_score = cross_val_score(Lasso(alpha=a), X_train_scaled, y_train, cv=cv)
+	print(f'Lasso alpha={a:<6} 平均CV分数: {lasso_score.mean():.4f}')
 
 gs = GridSearchCV(Ridge(), {'alpha': alpha_list}, cv=cv)
-gs.fit(X, y)
+gs.fit(X_train_scaled, y_train)
 print('Ridge最优alpha参数：', gs.best_params_)
 print('Ridge平均CV分数：', gs.best_score_)
 gs = GridSearchCV(Lasso(), {'alpha': alpha_list}, cv=cv)
-gs.fit(X, y)
+gs.fit(X_train_scaled, y_train)
 print('Lasso最优alpha参数：', gs.best_params_)
 print('Lasso平均CV分数：', gs.best_score_)
 
